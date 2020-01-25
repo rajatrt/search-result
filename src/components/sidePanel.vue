@@ -1,8 +1,12 @@
 <template>
     <div class="side-panel-wrapper">
-        <img :src="image.download_url"/>
+        <img :src="selectedImage.download_url"/>
         <div class="cross-button" @click="closeSidePanel()">
             <i class="fa fa-times"></i>
+        </div>
+        <div class="navigation-button">
+            <i class="fa fa-chevron-circle-left" @click="navigate(-1)"></i>
+            <i class="fa fa-chevron-circle-right" @click="navigate(1)"></i>
         </div>
     </div>
 </template>
@@ -10,14 +14,21 @@
 <script>
 export default {
     props: {
-        image:{
+        selectedImage:{
             type: Object,
+            required: true
+        },
+        index:{
+            type: Number,
             required: true
         }
     },
     methods:{
         closeSidePanel(){
             this.$emit('close-side-panel');
+        },
+        navigate(ind){
+            this.$emit('navigate-image',ind);
         }
     }
 }
@@ -34,12 +45,23 @@ export default {
     img{
         border-radius: 1rem;
         width:34rem;
-        height:30rem;
+        height:38rem;
+    }
+    .navigation-button{
+        position: absolute;
+        top: 2rem;
+        right: 2.5rem;
+        background: transparent;
+        font-size: 1.5rem;
+        color: white;
+        >i{
+            margin:.25rem;
+        }
     }
     .cross-button{
         position: absolute;
         top: 2rem;
-        right: 2.5rem;
+        left: 2.5rem;
         font-size: 1.5rem;
         width: 2rem;
         height: 2rem;

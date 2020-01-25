@@ -1,12 +1,16 @@
 <template>
   <div id="app">
     <grid 
+      :images="images"
+      :selected-image="selectedImage"
       v-on:selected-image="selectedImageHandler($event)">
     </grid>
     <side-panel 
       v-if="showSidePanel" 
-      :image="image" 
-      v-on:close-side-panel="closeSidePanel()">
+      :selected-image="selectedImage"
+      :index="index"
+      v-on:close-side-panel="closeSidePanel()"
+      v-on:navigate-image="navigateHandler($event)">
     </side-panel>
   </div>
 </template>
@@ -16,25 +20,45 @@
 import Grid from './components/grid.vue'
 import SidePanel from './components/sidePanel.vue'
 
+import { getFreeImages } from './services/utility.js'
+
 export default {
   name: 'app',
   data() {
     return {
       showSidePanel: false,
-      image: {}
+      images: {},
+      selectedImage: {},
+      index: -1
     }
+  },
+  created() {
+    getFreeImages().then(res => {
+        this.images = res;
+    });
   },
   components: {
     Grid,
     'side-panel': SidePanel
   },
   methods:{
-    selectedImageHandler(image){
+    selectedImageHandler({ image, index }){
       this.showSidePanel=true;
-      this.image = image;
+      this.selectedImage = image;
+      this.index = index;
     },
     closeSidePanel(){
+      // reset all the values.
       this.showSidePanel=false
+      this.selectedImage = {};
+      this.index = -1;
+    },
+    navigateHandler(ind){
+      let newIndex = this.index+ind;
+      if(newIndex >=0 && newIndex< this.images.length){
+        this.selectedImage = this.images[newIndex];
+        this.index = newIndex;
+      }
     }
   }
 }

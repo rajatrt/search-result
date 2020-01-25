@@ -2,9 +2,9 @@
     <div class="grid-wrapper">
         <div 
             :class="['image',image == selectedImage ? 'selected':'']" 
-            v-for="image in images" 
+            v-for="(image,index) in images" 
             :key="image" 
-            @click="clickHandler(image)">
+            @click="clickHandler({ image,index })">
             <img :src="image.download_url">
             <div class="label">{{ '-by ' + image.author }}</div>
         </div>
@@ -14,24 +14,21 @@
 
 <script>
 
-import { getFreeImages } from '../services/utility.js'
 
 export default {
-    data(){
-        return {
-            images:[],
-            selectedImage : {}
+    props:{
+        selectedImage: {
+            type: Object,
+            default: () => ({})
+        },
+        images: {
+            type: Array,
+            default: () => []
         }
     },
-    mounted() {
-        getFreeImages().then(res => {
-            this.images = res;
-        });
-    },
     methods:{
-        clickHandler(image) {
-            this.selectedImage = image;
-            this.$emit('selected-image',image);
+        clickHandler({ image, index }) {
+            this.$emit('selected-image',{ image, index});
         }
     }
 }
