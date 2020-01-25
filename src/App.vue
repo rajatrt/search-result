@@ -58,6 +58,7 @@ export default {
       if(newIndex >=0 && newIndex< this.images.length){
         this.selectedImage = this.images[newIndex];
         this.index = newIndex;
+        document.getElementById(this.selectedImage.id).scrollIntoView(({ behavior: 'smooth' }));
       }
     }
   }
