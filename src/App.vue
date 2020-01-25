@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <grid 
+      id="grid"
       :images="images"
       :selected-image="selectedImage"
       v-on:selected-image="selectedImageHandler($event)">
@@ -29,13 +30,26 @@ export default {
       showSidePanel: false,
       images: {},
       selectedImage: {},
-      index: -1
+      index: -1,
+      page: 0,
+      fetchData: true
     }
   },
-  created() {
-    getFreeImages().then(res => {
+  mounted() {
+    getFreeImages(this.page).then(res => {
         this.images = res;
     });
+    document.getElementById("grid").onscroll = () => {
+      let grid = document.getElementById("grid");
+      if ((grid.scrollHeight - grid.scrollTop) === grid.offsetHeight && this.fetchData) {
+        this.fetchData = false;
+        this.page++;
+        getFreeImages(this.page).then(res =>{
+          this.images = [...this.images,...res];
+          this.fetchData = true;
+        })
+      }
+    };
   },
   components: {
     Grid,

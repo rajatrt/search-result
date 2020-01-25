@@ -42,6 +42,7 @@ export default {
     margin:.5rem 2rem;
     box-shadow: 10px 10px 5px #aaaaaa;
     position: relative;
+    border: 1px solid #424242;
     img{
         border-radius: 1rem;
         width:34rem;
