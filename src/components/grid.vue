@@ -1,6 +1,10 @@
 <template>
     <div class="grid-wrapper">
-        <div class="image" v-for="image in images" :key="image">
+        <div 
+            :class="['image',image == selectedImage ? 'selected':'']" 
+            v-for="image in images" 
+            :key="image" 
+            @click="clickHandler(image)">
             <img :src="image.download_url">
             <div class="label">{{ '-by ' + image.author }}</div>
         </div>
@@ -15,13 +19,20 @@ import { getFreeImages } from '../services/utility.js'
 export default {
     data(){
         return {
-            images:[]
+            images:[],
+            selectedImage : {}
         }
     },
     mounted() {
         getFreeImages().then(res => {
             this.images = res;
         });
+    },
+    methods:{
+        clickHandler(image) {
+            this.selectedImage = image;
+            this.$emit('selected-image',image);
+        }
     }
 }
 </script>
@@ -31,6 +42,8 @@ export default {
     display: flex;
     flex: 1 1 20rem;
     flex-wrap: wrap;
+    height: calc(100vh - 2rem);
+    overflow: auto;
     .image{
         display: flex;
         flex-direction: column;
@@ -38,6 +51,10 @@ export default {
         border-radius: 1rem;
         margin:.5rem;
         box-shadow: 10px 10px 5px #aaaaaa;
+        cursor: pointer;
+        &.selected{
+            border: 1px solid #aaaaaa;
+        }
         img{
             width: 10rem;
             height: 10rem;  
@@ -50,6 +67,11 @@ export default {
             overflow: hidden;
             white-space: nowrap;
         }
+    }
+    .image:hover{
+        img{
+            box-shadow: 10px 10px 5px #aaaaaa;
+        }   
     }
 }
 </style>
